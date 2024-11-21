@@ -1,0 +1,4 @@
+---
+type: "projects"
+layout: "people"
+---

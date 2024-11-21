@@ -1,0 +1,34 @@
+<table class="table table-hover">
+    {{ range . }}
+    {{ $logo := relURL (urls.JoinPath "images/projects" .Params.logo) }}
+        <tr class="table-item">
+            <td class="project-logo-cell">
+                <img src="{{ $logo }}" class="img-fluid" alt="Image of {{ .Title }}">
+            </td>
+            <td class="project-info-cell">
+                <a href="{{ .Params.website }}"> {{ .Title }} </a> 
+                {{ with .Params.uvpi }} 
+                    <p> <strong>UV-PIs:</strong> {{ . }}  </p> 
+                {{ end }}
+                {{ with .Params.pi }} 
+                    <p> <strong>PIs:</strong> {{ . }}  </p> 
+                {{ end }}
+                {{ with .Params.years }} 
+                    <p> <strong>Duration:</strong> ({{ . }})  </p> 
+                {{ end }}
+                {{ with .Params.funding_source }} 
+                    <p> <strong>Funding Source:</strong> {{ . }}  </p> 
+                {{ end }}
+                {{ with .Params.role }} 
+                    <p> <strong>Role:</strong> {{ . }}  </p> 
+                {{ end }}
+                {{ with .Params.project_type }} 
+                    <p> <strong>Project Type:</strong> {{ . }}  </p> 
+                {{ end }}
+                {{ with .Params.partners }} 
+                    <p> <strong>Partners:</strong> {{ delimit . ", " }}  </p> 
+                {{ end }}
+            </td>
+        </tr>
+    {{ end }}
+</table>

@@ -1,0 +1,55 @@
+{{ define "main" }}
+<div class="content-container grid-layout">
+    <div class="box-single">
+        <h1> {{ .Title }} </h1>
+    </div>
+    <div class="box-content">
+        {{ $content := .Content }}
+        {{ $content = replace $content "src=\"" (printf "src=\"%s" (relURL "images/research/")) }}
+        <p>{{ $content | markdownify }}</p>
+        {{ $currentDir := .File.Dir }}
+        {{ $activePages := where .Pages "File.Dir" $currentDir }}
+        {{ if gt (len $activePages) 0 }}
+        <h1>Related Projects </h1>
+        <div class="grid-container" id="grid-container">
+            {{ range $activePages }}
+            {{ $logo := relURL (urls.JoinPath "images/projects" .Params.logo) }}
+            <div class="grid-item project-item">
+            <div class="project-logo-cell">
+                <a href="{{ .Params.website }}">
+                <img src="{{ $logo }}" alt="Image of {{ .Title }}">
+                </a>
+            </div>
+            <div class="text">
+                <a href="{{ .Params.website }}" class="nameLink_a"> {{ .Title }} </a>
+                {{ with .Params.uvpi }} 
+                <p><strong>UV-PIs:</strong> {{ . }}</p>
+                {{ end }}
+                {{ with .Params.pi }} 
+                <p><strong>PIs:</strong> {{ . }}</p>
+                {{ end }}
+                {{ with .Params.years }} 
+                <p><strong>Duration:</strong> ({{ . }})</p>
+                {{ end }}
+                {{ with .Params.funding_source }} 
+                <p><strong>Funding Source:</strong> {{ . }}</p>
+                {{ end }}
+                {{ with .Params.role }} 
+                <p><strong>Role:</strong> {{ . }}</p>
+                {{ end }}
+                {{ with .Params.project_type }} 
+                <p><strong>Project Type:</strong> {{ . }}</p>
+                {{ end }}
+                {{ with .Params.partners }} 
+                <p><strong>Partners:</strong> {{ delimit . ", " }}</p>
+                {{ end }}
+            </div>
+            </div>
+            {{ end }}
+        </div>
+        {{ else }}
+        <p>No current projects available.</p>
+        {{ end }}
+    </div>
+</div>
+{{ end }}
