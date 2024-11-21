@@ -14,7 +14,7 @@ links:
 ---
   Video quality metrics are intended to replace human evaluation with evaluation by machine. To accurately simulate human judgement, they must include some aspects of the human visual system.
   
-  In this paper we present a class of low-complexity video quality metrics based on the Standard Spatial Observer (SSO). In these metrics, the basic SSO model is improved with several additional features from the current human vision models
+  In this paper we present a class of low-complexity video quality metrics based on the Standard Spatial Observer (SSO). In these metrics, the basic SSO model is improved with several additional features from the current human vision models.
   
   To evaluate the metrics, we make use of the data set recently produced by the Video Quality Experts Group (VQEG), which consists of subjective ratings of 160 samples of digital video covering a wide range of quality. For each metric we examine the correlation between its predictions and the subjective ratings.
   
