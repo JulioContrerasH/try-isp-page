@@ -1,0 +1,45 @@
+name: Merge Prometeo Page
+
+on:
+  workflow_run:
+    workflows:
+      - "GitHub Pages"  # Nombre del workflow principal
+      - "Prometeo Pages"  # Nombre del segundo workflow que genera Prometeo
+    types:
+      - completed
+
+jobs:
+  merge-prometeo:
+    runs-on: ubuntu-22.04
+
+    steps:
+      # Paso 1: Clonar la rama gh-ipl-pages
+      - name: Checkout gh-ipl-pages
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: gh-ipl-pages  # La rama de destino
+          path: gh-pages
+
+      # Paso 2: Clonar la rama gh-prometeo en un subdirectorio
+      - name: Checkout gh-prometeo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: gh-prometeo  # La rama con el contenido de Prometeo
+          path: prometeo
+
+      # Paso 3: Copiar el contenido de gh-prometeo a gh-ipl-pages
+      - name: Move Prometeo Content
+        run: |
+          cp -r prometeo/* gh-pages/public/projects/prometeo/
+
+      # Paso 4: Subir los cambios
+      - name: Commit and Push Changes
+        run: |
+          cd gh-pages
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "Merge Prometeo into gh-ipl-pages"
+          git push origin gh-ipl-pages
