@@ -1,55 +1,38 @@
-name: Deploy Combined Pages
+name: GitHub Pages
 
 on:
   push:
     branches:
       - main  # La rama principal desde la que se hará el push
+  pull_request:
 
 jobs:
   deploy:
     runs-on: ubuntu-22.04
-
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      # Paso 1: Clonar la rama gh-ipl-pages
-      - name: Checkout gh-ipl-pages
-        uses: actions/checkout@v4
+      # Paso 1: Checkout del repositorio
+      - uses: actions/checkout@v4
         with:
-          ref: gh-ipl-pages  # La rama de destino
-          fetch-depth: 0     # Asegura que se obtenga todo el historial
+          submodules: true  # Descargar submódulos (temas de Hugo)
+          fetch-depth: 0    # Descargar todo el historial
 
-      # Paso 2: Generar la página principal desde hugo.toml
-      - name: Setup Hugo for Main Site
+      # Paso 2: Configuración de Hugo
+      - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: '0.125.7'
+          # extended: true  # Habilita esto si necesitas soporte SCSS/SASS
 
-      - name: Build Main Hugo Site
-        run: hugo --minify --config hugo.toml
-
-      # Paso 3: Guardar los archivos generados temporalmente
-      - name: Save Main Site Files
-        run: mv public main_public
-
-      # Paso 4: Generar la página de Prometeo desde hugo_new.toml
-      - name: Build Prometeo Hugo Site
+      # Paso 3: Construcción del sitio
+      - name: Build Hugo site
         run: hugo --minify --config hugo_new.toml
 
-      # Paso 5: Mover los archivos de Prometeo a la carpeta correspondiente
-      - name: Move Prometeo Files
-        run: |
-          mkdir -p main_public/projects/prometeo
-          cp -r public/* main_public/projects/prometeo
-
-      # Paso 6: Copiar los archivos de nuevo a `public`
-      - name: Restore Combined Files
-        run: |
-          rm -rf public
-          mv main_public public
-
-      # Paso 7: Subir los cambios a gh-ipl-pages
-      - name: Deploy Combined Site
+      # Paso 4: Despliegue en GitHub Pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
-          publish_branch: gh-ipl-pages
+          publish_dir: ./public/
+          publish_branch: gh-ipl-pages  # La rama de publicación en GitHub Pages
