@@ -1,12 +1,10 @@
 name: Merge Prometeo Page
 
 on:
-  workflow_run:
-    workflows:
-      - "GitHub Pages"  # Nombre del workflow principal
-      - "Prometeo Pages"  # Nombre del segundo workflow que genera Prometeo
-    types:
-      - completed
+  push:
+    branches:
+      - main
+
 
 jobs:
   merge-prometeo:
