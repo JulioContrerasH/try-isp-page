@@ -1,4 +1,4 @@
-baseURL = "http://localhost:1313/"
+baseURL = "https://juliocontrerash.github.io/try-isp-page/"
 #baseURL = "https://isp.uv.es/github"
 publishDir = "public"
 

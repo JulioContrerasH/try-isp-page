@@ -7,4 +7,4 @@ hugo --config hugo.toml --destination public/
 hugo --config hugo_new.toml --destination public/projects/prometeo/
 
 # Servir el sitio principal en localhost:1313
-hugo server --config hugo.toml --baseURL http://localhost:1313 --port 1313 --bind 0.0.0.0
+hugo server --config hugo.toml
