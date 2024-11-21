@@ -1,13 +1,12 @@
-name: Merge Prometeo Page
+name: Deploy Combined Pages
 
 on:
   push:
     branches:
-      - main
-
+      - main  # La rama principal desde la que se hará el push
 
 jobs:
-  merge-prometeo:
+  deploy:
     runs-on: ubuntu-22.04
 
     steps:
@@ -15,29 +14,42 @@ jobs:
       - name: Checkout gh-ipl-pages
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.repository }}
           ref: gh-ipl-pages  # La rama de destino
-          path: gh-pages
+          fetch-depth: 0     # Asegura que se obtenga todo el historial
 
-      # Paso 2: Clonar la rama gh-prometeo en un subdirectorio
-      - name: Checkout gh-prometeo
-        uses: actions/checkout@v4
+      # Paso 2: Generar la página principal desde hugo.toml
+      - name: Setup Hugo for Main Site
+        uses: peaceiris/actions-hugo@v3
         with:
-          repository: ${{ github.repository }}
-          ref: gh-prometeo  # La rama con el contenido de Prometeo
-          path: prometeo
+          hugo-version: '0.125.7'
 
-      # Paso 3: Copiar el contenido de gh-prometeo a gh-ipl-pages
-      - name: Move Prometeo Content
-        run: |
-          cp -r prometeo/* gh-pages/public/projects/prometeo/
+      - name: Build Main Hugo Site
+        run: hugo --minify --config hugo.toml
 
-      # Paso 4: Subir los cambios
-      - name: Commit and Push Changes
+      # Paso 3: Guardar los archivos generados temporalmente
+      - name: Save Main Site Files
+        run: mv public main_public
+
+      # Paso 4: Generar la página de Prometeo desde hugo_new.toml
+      - name: Build Prometeo Hugo Site
+        run: hugo --minify --config hugo_new.toml
+
+      # Paso 5: Mover los archivos de Prometeo a la carpeta correspondiente
+      - name: Move Prometeo Files
         run: |
-          cd gh-pages
-          git config user.name "GitHub Actions"
-          git config user.email "github-actions@github.com"
-          git add .
-          git commit -m "Merge Prometeo into gh-ipl-pages"
-          git push origin gh-ipl-pages
+          mkdir -p main_public/projects/prometeo
+          cp -r public/* main_public/projects/prometeo
+
+      # Paso 6: Copiar los archivos de nuevo a `public`
+      - name: Restore Combined Files
+        run: |
+          rm -rf public
+          mv main_public public
+
+      # Paso 7: Subir los cambios a gh-ipl-pages
+      - name: Deploy Combined Site
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-ipl-pages
