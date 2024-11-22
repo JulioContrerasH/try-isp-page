@@ -64,3 +64,32 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public/
           publish_branch: gh-ipl-pages2
+
+  deploy3:
+    runs-on: ubuntu-22.04
+    concurrency:
+      group: deploy-prometeo-${{ github.ref }}
+    steps:
+      # Paso 1: Checkout del repositorio
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      # Paso 2: Configuración de Hugo
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.125.7'
+
+      # Paso 3: Construcción del sitio Prometeo
+      - name: Build Prometeo Hugo Site
+        run: hugo --minify --config hugo_new2.toml
+
+      # Paso 4: Despliegue en GitHub Pages (rama gh-ipl-pages2)
+      - name: Deploy Prometeo Site
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public/
+          publish_branch: gh-ipl-pages3
