@@ -24,12 +24,12 @@ jobs:
         with:
           hugo-version: '0.125.7'
           # extended: true  # Habilita esto si necesitas soporte SCSS/SASS
-
-      # Paso 3: Construcción del sitio
+          
+      # Paso 3.2: Construcción del sitio
       - name: Build Hugo site
         run: hugo --minify --config hugo_new.toml
 
-      # Paso 4: Despliegue en GitHub Pages
+      # Paso 4.2: Despliegue en GitHub Pages
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
