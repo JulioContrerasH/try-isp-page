@@ -37,7 +37,6 @@ jobs:
           publish_branch: gh-ipl-pages1
 
   deploy_prometeo:
-    needs: deploy_prometeo
     runs-on: ubuntu-22.04
     concurrency:
       group: deploy-prometeo-${{ github.ref }}
