@@ -137,8 +137,12 @@ jobs:
       # Paso 6: Copiar contenido de gh-ipl-pages2 a projects/prometeo/
       - name: Copiar contenido de Prometeo
         run: |
+          # Copiar archivos desde gh-ipl-pages2 excepto 'projects' para evitar conflicto
           git checkout origin/gh-ipl-pages2 -- .
-          mv * projects/prometeo/
+          
+          # Mover archivos y carpetas (excepto 'projects') a 'projects/prometeo'
+          find * -type f -exec mv {} projects/prometeo/ \;
+          find * -type d ! -name 'projects' -exec mv {} projects/prometeo/ \;
 
       # Paso 7: Confirmar y subir cambios
       - name: Subir cambios
