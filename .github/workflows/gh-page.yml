@@ -96,57 +96,46 @@ jobs:
           publish_dir: ./public/
           publish_branch: gh-ipl-pages3
 
-  copy_prometeo:
-    name: Copy Prometeo Content to gh-ipl-pages1
-    runs-on: ubuntu-22.04
-    needs: deploy_prometeo  # Depende del job anterior que genera gh-ipl-pages2
+  copy:
+    name: Copy content from source branch to target folder
+    runs-on: ubuntu-latest
+    needs: deploy_prometeo
     steps:
-      # Paso 1: Clonar el repositorio y todas las ramas
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Traer todo el historial
-          persist-credentials: false  # Usar token para cambios
-
-      # Paso 2: Configurar usuario para Git
-      - name: Configurar Git
+      - uses: actions/checkout@v2
+      - name: Copy files to target branch
+        env:
+          SOURCE_BRANCH: 'gh-ipl-pages2'      # Define la rama fuente explícitamente
+          TARGET_BRANCH: 'gh-ipl-pages1'      # Define la rama destino explícitamente
+          TARGET_FOLDER: 'projects/prometeo' # Define la carpeta de destino
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
-
-      # Paso 3: Asegurarse de que ambas ramas existen
-      - name: Validar ramas
-        run: |
-          git fetch --all
-          if ! git show-ref --verify --quiet refs/remotes/origin/gh-ipl-pages2; then
-            echo "Error: La rama origen (gh-ipl-pages2) no existe."
-            exit 1
-          fi
-          if ! git show-ref --verify --quiet refs/remotes/origin/gh-ipl-pages1; then
-            echo "Error: La rama destino (gh-ipl-pages1) no existe."
-            exit 1
-          fi
-
-      # Paso 4: Cambiar a la rama destino
-      - name: Cambiar a gh-ipl-pages1
-        run: git checkout gh-ipl-pages1
-
-      # Paso 5: Crear carpeta projects/prometeo/ si no existe
-      - name: Crear carpeta destino
-        run: mkdir -p projects/prometeo
-
-      # Paso 6: Copiar contenido de gh-ipl-pages2 a projects/prometeo/
-      - name: Copiar contenido de Prometeo
-        run: |
-          # Copiar archivos desde gh-ipl-pages2 excepto 'projects' para evitar conflicto
-          git checkout origin/gh-ipl-pages2 -- .
+          # Configurar git
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
           
-          # Mover archivos y carpetas (excepto 'projects') a 'projects/prometeo'
-          find * -type f -exec mv {} projects/prometeo/ \;
-          find * -type d ! -name 'projects' -exec mv {} projects/prometeo/ \;
-
-      # Paso 7: Confirmar y subir cambios
-      - name: Subir cambios
-        run: |
+          # Check out la rama fuente
+          git fetch origin $SOURCE_BRANCH
+          git checkout $SOURCE_BRANCH
+          
+          # Crear un directorio temporal para copiar los archivos
+          TMP_DIR=$(mktemp -d)
+          cp -R ./* $TMP_DIR/
+          
+          # Check out la rama destino
+          git fetch origin $TARGET_BRANCH
+          git checkout $TARGET_BRANCH
+          
+          # Crear la carpeta de destino si no existe
+          mkdir -p $TARGET_FOLDER
+          
+          # Limpiar la carpeta de destino (opcional: solo si quieres sobrescribir todo)
+          rm -rf $TARGET_FOLDER/*
+          
+          # Copiar los archivos desde el directorio temporal a la carpeta de destino
+          cp -R $TMP_DIR/* $TARGET_FOLDER/
+          
+          # Añadir y confirmar cambios si los hay
           git add -A
-          git diff-index --quiet HEAD || git commit -m "Merge Prometeo content into gh-ipl-pages1/projects/prometeo"
-          git push origin gh-ipl-pages1
+          git diff-index --quiet HEAD || git commit -m "Sync files from $SOURCE_BRANCH to $TARGET_FOLDER"
+          
+          # Push los cambios a la rama destino
+          git push origin $TARGET_BRANCH
