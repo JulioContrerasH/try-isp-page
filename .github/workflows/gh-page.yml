@@ -95,3 +95,41 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public/
           publish_branch: gh-ipl-pages3
+
+
+  copy_prometeo_to_main:
+    needs: deploy_prometeo
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy Prometeo to Main
+        env:
+          SRC_FOLDER_PATH: './'
+          TARGET_BRANCH: 'gh-ipl-pages1'
+        run: |
+          # Configuración de usuario para Git
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          
+          # Buscar los archivos a copiar
+          files=$(find $SRC_FOLDER_PATH -type f)
+
+          # Traer las ramas de destino y origen
+          git fetch
+
+          # Cambiar a la rama destino
+          git checkout $TARGET_BRANCH
+
+          # Crear el subdirectorio si no existe
+          mkdir -p projects/prometeo
+
+          # Copiar archivos desde la rama origen
+          git checkout gh-ipl-pages2 -- $files
+
+          # Mover los archivos al subdirectorio
+          mv $SRC_FOLDER_PATH/* projects/prometeo/
+
+          # Añadir, hacer commit y pushear
+          git add -A
+          git diff-index --quiet HEAD || git commit -am "Merge Prometeo content into gh-ipl-pages1/projects/prometeo"
+          git push origin $TARGET_BRANCH
