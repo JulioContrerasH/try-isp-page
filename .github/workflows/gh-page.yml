@@ -106,16 +106,24 @@ jobs:
         env:
           SRC_FOLDER_PATH: './'
           TARGET_BRANCH: 'gh-ipl-pages1'
+          SOURCE_BRANCH: 'gh-ipl-pages2'
         run: |
           # Configuración de usuario para Git
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          
-          # Buscar los archivos a copiar
-          files=$(find $SRC_FOLDER_PATH -type f)
 
-          # Traer las ramas de destino y origen
-          git fetch
+          # Asegurarse de que todas las ramas estén disponibles
+          git fetch --all
+
+          # Validar que ambas ramas existan
+          if ! git show-ref --verify --quiet refs/remotes/origin/$SOURCE_BRANCH; then
+            echo "Error: La rama origen ($SOURCE_BRANCH) no existe."
+            exit 1
+          fi
+          if ! git show-ref --verify --quiet refs/remotes/origin/$TARGET_BRANCH; then
+            echo "Error: La rama destino ($TARGET_BRANCH) no existe."
+            exit 1
+          fi
 
           # Cambiar a la rama destino
           git checkout $TARGET_BRANCH
@@ -124,7 +132,7 @@ jobs:
           mkdir -p projects/prometeo
 
           # Copiar archivos desde la rama origen
-          git checkout gh-ipl-pages2 -- $files
+          git checkout origin/$SOURCE_BRANCH -- $SRC_FOLDER_PATH/*
 
           # Mover los archivos al subdirectorio
           mv $SRC_FOLDER_PATH/* projects/prometeo/
