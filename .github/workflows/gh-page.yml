@@ -1,0 +1,66 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # La rama principal desde la que se hará el push
+  pull_request:
+
+jobs:
+  deploy_main:
+    runs-on: ubuntu-22.04
+    concurrency:
+      group: deploy-main-${{ github.ref }}
+    steps:
+      # Paso 1: Checkout del repositorio
+      - uses: actions/checkout@v4
+        with:
+          submodules: true  # Descargar submódulos (temas de Hugo)
+          fetch-depth: 0    # Descargar todo el historial
+
+      # Paso 2: Configuración de Hugo
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.125.7'
+
+      # Paso 3: Construcción del sitio principal
+      - name: Build Main Hugo Site
+        run: hugo --minify --config hugo.toml
+
+      # Paso 4: Despliegue en GitHub Pages (rama gh-ipl-pages1)
+      - name: Deploy Main Site
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public/
+          publish_branch: gh-ipl-pages1
+
+  deploy_prometeo:
+    runs-on: ubuntu-22.04
+    concurrency:
+      group: deploy-prometeo-${{ github.ref }}
+    steps:
+      # Paso 1: Checkout del repositorio
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      # Paso 2: Configuración de Hugo
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.125.7'
+
+      # Paso 3: Construcción del sitio Prometeo
+      - name: Build Prometeo Hugo Site
+        run: hugo --minify --config hugo_new.toml
+
+      # Paso 4: Despliegue en GitHub Pages (rama gh-ipl-pages2)
+      - name: Deploy Prometeo Site
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public/
+          publish_branch: gh-ipl-pages2
