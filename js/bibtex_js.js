@@ -270,11 +270,26 @@ function author_tex_reformat(input) {
   class BibtexDisplay {
     constructor() {
       this.fixValue = function (value) {
+        // Transformar comillas especiales
         value = value.replace(/\\glqq\s?/g, "&bdquo;");
         value = value.replace(/\\grqq\s?/g, '&rdquo;');
         value = value.replace(/\\ /g, '&nbsp;');
         value = value.replace(/\\url/g, '');
         value = value.replace(/---/g, '&mdash;');
+        
+        // Transformar caracteres especiales con diacríticos
+        value = value.replace(/{\\'a}/g, '&aacute;'); // á
+        value = value.replace(/{\\'e}/g, '&eacute;'); // é
+        value = value.replace(/{\\'i}/g, '&iacute;'); // í
+        value = value.replace(/{\\'o}/g, '&oacute;'); // ó
+        value = value.replace(/{\\'u}/g, '&uacute;'); // ú
+        value = value.replace(/{\\'A}/g, '&Aacute;'); // Á
+        value = value.replace(/{\\'E}/g, '&Eacute;'); // É
+        value = value.replace(/{\\'I}/g, '&Iacute;'); // Í
+        value = value.replace(/{\\'O}/g, '&Oacute;'); // Ó
+        value = value.replace(/{\\'U}/g, '&Uacute;'); // Ú
+        
+        // Transformar otros caracteres especiales
         value = value.replace(/{\\"a}/g, '&auml;');
         value = value.replace(/\{\\"o\}/g, '&ouml;');
         value = value.replace(/{\\"u}/g, '&uuml;');
@@ -282,9 +297,13 @@ function author_tex_reformat(input) {
         value = value.replace(/{\\"O}/g, '&Ouml;');
         value = value.replace(/{\\"U}/g, '&Uuml;');
         value = value.replace(/\\ss/g, '&szlig;');
+        
+        // Eliminar llaves dejando el contenido sin cambios
         value = value.replace(/\{(.*?)\}/g, '$1');
+      
         return value;
       };
+      
   
       this.bibtexParser = null;
   
