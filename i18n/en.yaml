@@ -11,7 +11,7 @@
   translation: Contact Info
 
 - id: subscribe_newsletter
-  translation: Subscribe Newsletter
+  translation: Register for Event
 
 - id: subscribe
   translation: Subscribe
@@ -42,6 +42,12 @@
 
 - id: time
   translation: time
+
+- id: init
+  translation: Start
+
+- id: end
+  translation: End
 
 - id: category
   translation: Category
@@ -104,6 +110,10 @@
   translation: SUMMARY OF ACTIVITIES/INTERESTS
 
 - id: our_teachers
+  # translation: Our Teachers
+  translation: Our Teachers
+
+- id: our_speakers
   # translation: Our Teachers
   translation: Our Speakers
 

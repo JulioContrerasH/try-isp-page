@@ -1,10 +1,22 @@
 ---
-title: "About Us"
+title: "Explore Valencia"
 draft: false
 # page title background image
-bg_image: "images/backgrounds/page-title.jpg"
+bg_image: "images/people/fondo_organizers.webp"
 # meta description
-description : "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore. dolore magna aliqua. Ut enim ad minim veniam, quis nostrud."
+description : "Discover key locations in Valencia, such as the Universitat de València, ADEIT, and the Valencia Airport, with detailed metro routes and travel times. Interactive maps display main metro lines, nearby stations, and flexible transfer options like Empalme. Highlights include routes from Parc Científic and the airport, ensuring easy navigation across the city. Perfect for exploring Valencia efficiently."
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Velit recusandae voluptates doloremque veniam temporibus porro culpa ipsa, nisi soluta minima saepe laboriosam debitis nesciunt. Dolore, labore. Accusamus nulla sed cum aliquid exercitationem debitis error harum porro maxime quo iusto aliquam dicta modi earum fugiat, vel possimus commodi, deleniti et veniam, fuga ipsum praesentium. Odit unde optio nulla ipsum quae obcaecati! Quod esse natus quibusdam asperiores quam vel, tempore itaque architecto ducimus expedita
+## Contact information
+
+**ISP - address:** 
+- E4 building - 4th floor  
+- Parc Científic Universitat de València  
+- C/ Cat. Agustín Escardino Benlloch, 9 46980 Paterna (València), Spain  
+
+**Phone:** +34 963543229  
+**Fax:** +34 963543261  
+**Email:** emdiazsal@gmail.com 
+
+[Image and Signal Processing Group Map](https://isp.uv.es/contact/)  
+

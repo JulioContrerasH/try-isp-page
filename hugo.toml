@@ -1,6 +1,5 @@
-baseURL = "https://juliocontrerash.github.io/try-isp-page/"
-#baseURL = "https://isp.uv.es/github"
-publishDir = "public/"
+baseURL = "https://juliocontrerash.github.io/try-isp-page"
+publishDir = "public"
 
 
 
