@@ -341,26 +341,26 @@ class BibtexDisplay {
     this.formatProjects = function (projects) {
       console.log("Proyectos originales recibidos:", projects);
   
-      let cleanedProjects = projects.replace(/\s+/g, ' ').trim();
-      console.log("Proyectos después de limpiar espacios:", cleanedProjects);
+      let cleanedProjects = projects.replace(/[\s\n\r]+/g, ' ').trim();
+      console.log("Proyectos después de limpiar espacios y saltos de línea:", cleanedProjects);
   
       let projectArray = cleanedProjects.split(',').map(project => project.trim());
   
       projectArray = projectArray.map(project => {
-          let cleanedProject = project.replace(/\bProject\b/gi, '').trim(); 
-          console.log("Proyecto limpiado:", cleanedProject); 
+          let cleanedProject = project.replace(/Project\b/gi, '').trim(); 
+          console.log("Proyecto limpiado:", cleanedProject);
           return cleanedProject;
       });
   
-      
       projectArray = [...new Set(projectArray)];
   
       projectArray.sort();
-
+  
       const formattedProjects = projectArray.join(', ');
       console.log("Proyectos formateados:", formattedProjects);
       return formattedProjects;
-  };
+    };
+  
   
 
     this.displayBibtex = function (input, output, constraints) {
