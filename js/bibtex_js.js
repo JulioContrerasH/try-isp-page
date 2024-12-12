@@ -335,29 +335,33 @@ class BibtexDisplay {
     };
 
     this.cleanTitle = function(title) { // **
-        return title.replace(/^\{+|\}+$/g, '').replace(/\{|\}/g, ''); // Eliminar llaves externas o internas
+        return title.replace(/^\{+|\}+$/g, '').replace(/\{|\}/g, ''); 
     };
 
-    this.formatProjects = function(projects) {
-        // Paso 1: Separar proyectos por coma
-        let projectArray = projects.split(',').map(project => project.trim());
-
-        // Paso 2: Eliminar sufijo "Project" si está presente
-        projectArray = projectArray.map(project => {
-          const cleanedProject = project.endsWith(" Project") ? project.slice(0, -8).trim() : project;
-          console.log("Proyecto limpiado:", cleanedProject); // Después de limpieza
+    this.formatProjects = function (projects) {
+      console.log("Proyectos originales recibidos:", projects);
+  
+      let cleanedProjects = projects.replace(/\s+/g, ' ').trim();
+      console.log("Proyectos después de limpiar espacios:", cleanedProjects);
+  
+      let projectArray = cleanedProjects.split(',').map(project => project.trim());
+  
+      projectArray = projectArray.map(project => {
+          let cleanedProject = project.replace(/\bProject\b/gi, '').trim(); 
+          console.log("Proyecto limpiado:", cleanedProject); 
           return cleanedProject;
       });
+  
+      
+      projectArray = [...new Set(projectArray)];
+  
+      projectArray.sort();
 
-        // Paso 3: Eliminar duplicados
-        projectArray = [...new Set(projectArray)];
-
-        // Paso 4: Ordenar proyectos alfabéticamente
-        projectArray.sort();
-
-        // Paso 5: Unir los proyectos con ", "
-        return projectArray.join(', ');
-    };
+      const formattedProjects = projectArray.join(', ');
+      console.log("Proyectos formateados:", formattedProjects);
+      return formattedProjects;
+  };
+  
 
     this.displayBibtex = function (input, output, constraints) {
       this.prepare_parser(input);
