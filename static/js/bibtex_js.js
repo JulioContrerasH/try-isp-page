@@ -344,8 +344,10 @@ class BibtexDisplay {
 
         // Paso 2: Eliminar sufijo "Project" si está presente
         projectArray = projectArray.map(project => {
-            return project.endsWith(" Project") ? project.slice(0, -8).trim() : project;
-        });
+          const cleanedProject = project.endsWith(" Project") ? project.slice(0, -8).trim() : project;
+          console.log("Proyecto limpiado:", cleanedProject); // Después de limpieza
+          return cleanedProject;
+      });
 
         // Paso 3: Eliminar duplicados
         projectArray = [...new Set(projectArray)];
@@ -454,13 +456,10 @@ class BibtexDisplay {
 }
   
 document.addEventListener("DOMContentLoaded", function () {
-  console.log("DOM fully loaded and parsed");
   let bibtexDisplay = new BibtexDisplay();
   let bibtexData = document.getElementById('bibtex_input').value;
-  console.log("Bibtex data loaded:", bibtexData);
 
   function initializeBibtex() {
-    console.log("Initializing Bibtex display");
     requestAnimationFrame(() => {
       // bibtexData = he.decode(bibtexData); // Decodifica los caracteres escapados en BibTeX
       bibtexDisplay.displayBibtex(bibtexData, $("#bibtex_display"), {});
@@ -472,7 +471,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function addYearsAndProjects() {
-    console.log("Adding years and projects");
     let yearSet = new Set();
     let projectSet = new Set();
 
@@ -483,13 +481,14 @@ document.addEventListener("DOMContentLoaded", function () {
             yearSet.add(year);
         }
     });
-    console.log("Collected years:", Array.from(yearSet));
 
     // Collect unique projects
     $(".bib-item").each(function () {
       const projectText = $(this).find(".project").text().trim();
+      console.log("Proyecto original:", projectText);
       if (projectText) {
           const formattedProjects = (new BibtexDisplay()).formatProjects(projectText); // Limpieza
+          console.log("Proyecto formateado:", formattedProjects);
           formattedProjects.split(',').forEach(project => {
               projectSet.add(project); // Elimina duplicados
           });
@@ -511,17 +510,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Populate project filter
     projectSet.forEach(project => {
+      console.log("Agregando proyecto al filtro:", project);
         $('#project-filter').append(`<option value="${project}">${project}</option>`);
     });
   }
 
 
   function updateFilters() {
-    console.log("Updating filters");
     const year = document.getElementById('year-filter').value;
     const project = document.getElementById('project-filter').value;
     const items = document.querySelectorAll('.bib-item');
-    console.log("Filtering by year:", year, "and project:", project);
 
     // Show or hide items based on filters
     items.forEach(item => {
@@ -541,7 +539,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function updateProjectFilter() {
-      console.log("Updating project filter");
       const selectedYear = document.getElementById('year-filter').value;
       let projectSet = new Set();
   
@@ -578,14 +575,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Handle changes in year filter
   document.getElementById('year-filter').addEventListener('change', () => {
-    console.log("Year filter changed");
     updateFilters();
     document.getElementById('project-filter').value = "";
   });
 
   // Handle changes in project filter
   document.getElementById('project-filter').addEventListener('change', () => {
-    console.log("Project filter changed");
     const selectedProject = document.getElementById('project-filter').value;
     updateFilters();
 
@@ -599,3 +594,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   initializeBibtex();
 });
+
+
+
+function toggleBibtex(button) {
+  const container = $(button).closest('.bib-item');
+  const bibtexElement = container.find('.bibtexdata');
+  bibtexElement.slideToggle();
+}
